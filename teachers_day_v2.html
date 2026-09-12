@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Teacher's Day</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --accent:#e8b94a;
+    --accent-rgb:232,185,74;
+  }
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; padding:0; }
+  body{
+    min-height:100vh;
+    background:
+      radial-gradient(ellipse 900px 600px at 50% -10%, rgba(var(--accent-rgb),0.10), transparent 60%),
+      radial-gradient(ellipse 700px 500px at 100% 100%, rgba(var(--accent-rgb),0.06), transparent 55%),
+      #060606;
+    color:#fff;
+    font-family:'Inter', sans-serif;
+    -webkit-font-smoothing:antialiased;
+    position:relative;
+    transition:background 0.5s ease;
+  }
+  /* film grain */
+  body::before{
+    content:"";
+    position:fixed; inset:0;
+    pointer-events:none;
+    z-index:50;
+    opacity:0.045;
+    mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  /* top signature stripe */
+  body::after{
+    content:"";
+    position:fixed; top:0; left:0; right:0; height:3px;
+    background:var(--accent);
+    z-index:40;
+  }
+  h1,h2{ font-family:'Space Grotesk', sans-serif; margin:0; font-weight:700; }
+  ::selection{ background:var(--accent); color:#000; }
+
+  .floaters{
+    position:fixed; inset:0;
+    overflow:hidden;
+    pointer-events:none;
+    z-index:0;
+  }
+  .floaters span{
+    position:absolute;
+    font-size:30px;
+    opacity:0.07;
+    animation:drift 14s ease-in-out infinite;
+  }
+  @keyframes drift{
+    0%,100%{ transform:translateY(0) rotate(0deg); }
+    50%{ transform:translateY(-22px) rotate(6deg); }
+  }
+
+  /* ========== LOGIN ========== */
+  #login-screen{
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:24px;
+    position:relative;
+    z-index:1;
+  }
+
+  .login-box{
+    width:100%;
+    max-width:380px;
+    background:rgba(255,255,255,0.02);
+    border:1px solid rgba(255,255,255,0.09);
+    border-radius:4px;
+    padding:44px 36px 34px;
+    position:relative;
+  }
+  .corner{
+    position:absolute;
+    width:14px; height:14px;
+    border:1.5px solid var(--accent);
+    opacity:0.8;
+  }
+  .corner.tl{ top:-1px; left:-1px; border-right:none; border-bottom:none; }
+  .corner.tr{ top:-1px; right:-1px; border-left:none; border-bottom:none; }
+  .corner.bl{ bottom:-1px; left:-1px; border-right:none; border-top:none; }
+  .corner.br{ bottom:-1px; right:-1px; border-left:none; border-top:none; }
+
+  .eyebrow{
+    font-size:12px;
+    letter-spacing:0.14em;
+    color:#777;
+    margin-bottom:18px;
+  }
+
+  .login-box h1{
+    font-size:29px;
+    line-height:1.2;
+    margin-bottom:8px;
+  }
+
+  .login-box .lede{
+    font-size:14px;
+    color:#888;
+    line-height:1.6;
+    margin-bottom:34px;
+  }
+
+  label{
+    display:block;
+    font-size:12px;
+    color:#999;
+    margin-bottom:8px;
+  }
+  .field{ margin-bottom:22px; }
+  .input-row{ position:relative; }
+
+  input[type="text"], input[type="password"]{
+    width:100%;
+    padding:0 30px 10px 0;
+    border:none;
+    border-bottom:1px solid #333;
+    background:transparent;
+    font-family:'Inter', sans-serif;
+    font-size:16px;
+    color:#fff;
+    outline:none;
+    transition:border-color 0.2s ease;
+  }
+  input::placeholder{ color:#444; }
+  input:focus{ border-bottom-color:var(--accent); }
+
+  #toggle-pw{
+    position:absolute;
+    right:0; bottom:8px;
+    background:none;
+    border:none;
+    color:#666;
+    cursor:pointer;
+    font-size:16px;
+    line-height:1;
+    padding:2px;
+  }
+  #toggle-pw:hover{ color:#fff; }
+
+  .field-hint{ font-size:11.5px; color:#555; margin-top:8px; }
+
+  .title-select{
+    display:flex;
+    gap:8px;
+  }
+  .title-chip{
+    flex:1;
+    padding:10px 12px;
+    text-align:center;
+    border:1px solid #333;
+    border-radius:2px;
+    background:transparent;
+    color:#999;
+    font-family:'Inter', sans-serif;
+    font-size:13.5px;
+    cursor:pointer;
+    transition:all 0.15s ease;
+  }
+  .title-chip:hover{ border-color:#555; color:#fff; }
+  .title-chip.active{
+    border-color:var(--accent);
+    color:var(--accent);
+    background:rgba(var(--accent-rgb),0.08);
+  }
+
+  .title-select.error{
+    animation:shake 0.35s ease;
+  }
+  .title-select.error .title-chip{
+    border-color:#e05c3a;
+  }
+  input.error{
+    border-bottom-color:#e05c3a !important;
+  }
+  @keyframes shake{
+    0%,100%{ transform:translateX(0); }
+    25%{ transform:translateX(-6px); }
+    75%{ transform:translateX(6px); }
+  }
+
+  button#enter-btn{
+    width:100%;
+    padding:13px 16px;
+    border:1px solid var(--accent);
+    border-radius:2px;
+    background:transparent;
+    color:var(--accent);
+    font-family:'Inter', sans-serif;
+    font-weight:500;
+    font-size:14px;
+    cursor:pointer;
+    margin-top:14px;
+    transition:background 0.15s ease, color 0.15s ease;
+  }
+  button#enter-btn:hover{ background:var(--accent); color:#000; }
+  button#enter-btn:focus-visible, input:focus-visible{ outline:1px solid var(--accent); outline-offset:3px; }
+
+  .login-foot{
+    margin-top:40px;
+    font-size:11px;
+    color:#444;
+  }
+  .login-foot strong{ color:#666; }
+
+  /* ========== CELEBRATION ========== */
+  #celebrate-screen{
+    display:none;
+    min-height:100vh;
+    position:relative;
+    z-index:1;
+  }
+
+  .topbar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:26px 32px;
+  }
+  .tag{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    font-size:12px;
+    letter-spacing:0.06em;
+    color:#999;
+  }
+  .tag .dot{
+    width:7px; height:7px;
+    border-radius:50%;
+    background:var(--accent);
+    box-shadow:0 0 8px 1px rgba(var(--accent-rgb),0.7);
+  }
+  #switch-btn{
+    background:none;
+    border:none;
+    color:#666;
+    font-family:'Inter', sans-serif;
+    font-size:12.5px;
+    cursor:pointer;
+    text-decoration:underline;
+    text-underline-offset:3px;
+  }
+  #switch-btn:hover{ color:#fff; }
+
+  .content{
+    max-width:580px;
+    margin:0 auto;
+    padding:48px 32px 40px;
+    opacity:0;
+    transform:translateY(10px);
+    animation:in 0.5s ease forwards;
+    position:relative;
+  }
+  @keyframes in{ to{ opacity:1; transform:none; } }
+
+  .badge-wrap{
+    position:relative;
+    width:64px; height:64px;
+    margin-bottom:28px;
+  }
+  .badge-ring{
+    position:absolute; inset:-8px;
+    border-radius:50%;
+    border:1px solid rgba(var(--accent-rgb),0.4);
+    animation:pulse 2.6s ease-in-out infinite;
+  }
+  @keyframes pulse{
+    0%,100%{ transform:scale(1); opacity:0.55; }
+    50%{ transform:scale(1.12); opacity:0.15; }
+  }
+  .badge{
+    width:64px; height:64px;
+    border-radius:50%;
+    background:rgba(var(--accent-rgb),0.10);
+    border:1px solid var(--accent);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:28px;
+    position:relative;
+  }
+
+  .content h1{
+    font-size:clamp(32px, 6vw, 46px);
+    line-height:1.12;
+    margin-bottom:6px;
+  }
+  .content h1 .accent-word{ color:var(--accent); }
+
+  .subject-line{
+    font-size:13px;
+    color:#777;
+    margin-bottom:30px;
+  }
+  .subject-line strong{ color:var(--accent); font-weight:500; }
+
+  .message{
+    font-size:16px;
+    line-height:1.75;
+    color:#bbb;
+    margin-bottom:36px;
+  }
+
+  .quote{
+    padding-left:16px;
+    border-left:2px solid var(--accent);
+    font-size:15px;
+    line-height:1.6;
+    color:#999;
+    margin-bottom:38px;
+  }
+
+  .sticker-strip{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+  }
+  .sticker-strip span{
+    width:34px; height:34px;
+    border-radius:50%;
+    border:1px solid rgba(255,255,255,0.14);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:15px;
+    opacity:0.8;
+  }
+
+  .site-footer{
+    max-width:580px;
+    margin:56px auto 0;
+    padding:24px 32px 0;
+    border-top:1px solid #161616;
+    font-size:11px;
+    color:#444;
+    position:relative;
+    z-index:1;
+  }
+  .site-footer strong{ color:#666; }
+
+  @media (prefers-reduced-motion: reduce){
+    .content{ animation:none; opacity:1; transform:none; }
+    .badge-ring{ animation:none; }
+    .floaters span{ animation:none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="floaters" id="floaters-login">
+  <span style="top:12%; left:8%;">📚</span>
+  <span style="top:70%; left:14%; font-size:24px;">✏️</span>
+  <span style="top:20%; right:10%;">🎓</span>
+  <span style="bottom:14%; right:12%; font-size:24px;">🍎</span>
+</div>
+
+<!-- ========== LOGIN ========== -->
+<div id="login-screen">
+  <div class="login-box">
+    <span class="corner tl"></span><span class="corner tr"></span>
+    <span class="corner bl"></span><span class="corner br"></span>
+
+    <div class="eyebrow">TEACHER'S DAY</div>
+    <h1>Welcome back, Teacher</h1>
+    <p class="lede">Enter your name and the subject you teach as your password.</p>
+
+    <div class="field">
+      <label for="teacher-name">Name</label>
+      <div class="input-row">
+        <input type="text" id="teacher-name" placeholder="Your name" autocomplete="off">
+      </div>
+    </div>
+    <div class="field">
+      <label>How should we address you?</label>
+      <div class="title-select" id="title-select">
+        <button type="button" class="title-chip" data-title="Aunty">Aunty</button>
+        <button type="button" class="title-chip" data-title="Sir">Sir</button>
+      </div>
+      <div class="field-hint" id="title-hint">This gets added after your name, out of respect.</div>
+    </div>
+    <div class="field">
+      <label for="teacher-subject">Password</label>
+      <div class="input-row">
+        <input type="text" id="teacher-subject" placeholder="Your subject" autocomplete="off">
+        <button type="button" id="toggle-pw" aria-label="Hide password">🙈</button>
+      </div>
+      <div class="field-hint" id="field-hint">e.g. Science, Maths, English, Art, History...</div>
+    </div>
+    <button type="button" id="enter-btn">Enter →</button>
+
+    <div class="login-foot">Made with <strong>Claude</strong> · YouTube tutorials and love, made by <strong>Rishabh Singh Rathore</strong></div>
+  </div>
+</div>
+
+<!-- ========== CELEBRATION ========== -->
+<div id="celebrate-screen">
+  <div class="floaters" id="floaters-celebrate"></div>
+
+  <div class="topbar">
+    <div class="tag"><span class="dot"></span><span id="tag-text">TEACHER</span></div>
+    <button id="switch-btn">Switch teacher</button>
+  </div>
+
+  <div class="content">
+    <div class="badge-wrap">
+      <div class="badge-ring"></div>
+      <div class="badge" id="badge-icon">🍎</div>
+    </div>
+    <h1 id="headline">Happy Teacher's<br>Day<span class="accent-word" id="accent-word">.</span></h1>
+    <div class="subject-line" id="subject-line">To Our Favourite Teacher</div>
+    <p class="message" id="message"></p>
+    <p class="quote" id="quote-text"></p>
+    <div class="sticker-strip" id="sticker-strip"></div>
+  </div>
+
+  <div class="site-footer">Made with <strong>Claude</strong> · YouTube tutorials and love, made by <strong>Rishabh Singh Rathore</strong></div>
+</div>
+
+<script>
+  const themes = {
+    science:   { label:"SCIENCE TEACHER",   accent:"#00e5a0", rgb:"0,229,160", icon:"🧪", extra:["🔬","🧬","⚗️","🪐"],
+      message:"From atoms to galaxies, you turned curiosity into understanding. Thank you for making the world make sense, one experiment at a time.",
+      quote:"The important thing is not to stop questioning — a lesson you taught us long before we understood it." },
+    maths:     { label:"MATHS TEACHER",     accent:"#6c7cff", rgb:"108,124,255", icon:"📐", extra:["➗","✖️","📊","🔢"],
+      message:"You turned confusing numbers into clear answers, and taught us that every hard problem has a next step. Thank you for your patience, equation by equation.",
+      quote:"Mathematics is the language in which you taught us to think clearly." },
+    english:   { label:"ENGLISH TEACHER",   accent:"#ff6b9d", rgb:"255,107,157", icon:"📖", extra:["✒️","📝","🖋️","📚"],
+      message:"You gave us words for what we couldn't say, and stories that stayed long after the bell rang. Thank you for teaching us to read the world a little better.",
+      quote:"A teacher who lends you a book lends you a thousand new worlds." },
+    hindi:     { label:"HINDI TEACHER",     accent:"#ff9f43", rgb:"255,159,67", icon:"📜", extra:["✍️","📚","🖋️","🏮"],
+      message:"आपने हमें भाषा से कहीं अधिक सिखाया — संस्कार, सोच और शब्दों की गहराई। धन्यवाद, गुरुजी।",
+      quote:"गुरुर्ब्रह्मा गुरुर्विष्णुः — आपके मार्गदर्शन का धन्यवाद।" },
+    sanskrit:  { label:"SANSKRIT TEACHER",  accent:"#d4a574", rgb:"212,165,116", icon:"🕯️", extra:["📜","🪔","📿","🏛️"],
+      message:"You kept an ancient language alive in a modern classroom, and taught us that old words can still hold new meaning. Thank you, Guruji.",
+      quote:"विद्या ददाति विनयम् — knowledge gives humility, and you gave us both." },
+    art:       { label:"ART TEACHER",       accent:"#ff3ec9", rgb:"255,62,201", icon:"🎨", extra:["🖌️","🖍️","✂️","🌈"],
+      message:"You showed us that there's no wrong way to see the world, only new ways to colour it in. Thank you for the freedom to create.",
+      quote:"Every child is an artist. You just made sure we didn't forget." },
+    music:     { label:"MUSIC TEACHER",     accent:"#b983ff", rgb:"185,131,255", icon:"🎵", extra:["🎶","🎹","🎻","🥁"],
+      message:"You taught us that rhythm and patience go hand in hand, and that every mistake is just practice in disguise. Thank you for the music.",
+      quote:"Where words fail, you taught us music could still speak." },
+    pe:        { label:"PHYSICAL EDUCATION",accent:"#ff5e3a", rgb:"255,94,58", icon:"⚽", extra:["🏃","🏅","🤸","🏆"],
+      message:"You taught us that discipline on the field builds character off it, and that losing well matters as much as winning. Thank you, Coach.",
+      quote:"You didn't just train our bodies — you built our discipline." },
+    history:   { label:"HISTORY TEACHER",   accent:"#c9a227", rgb:"201,162,39", icon:"🏛️", extra:["📜","⏳","🗿","🕰️"],
+      message:"You turned dusty dates into living stories, and taught us that the past still has something to say to the present. Thank you for the perspective.",
+      quote:"Those who taught us history made sure we wouldn't repeat its mistakes." },
+    geography: { label:"GEOGRAPHY TEACHER", accent:"#2ed8b6", rgb:"46,216,182", icon:"🌍", extra:["🧭","🗺️","🏔️","🌋"],
+      message:"You made the whole world fit inside a classroom, and taught us that every map has a story worth exploring. Thank you for the bigger picture.",
+      quote:"You taught us that the world is bigger than our neighbourhood, and worth understanding." },
+    computer:  { label:"COMPUTER SCIENCE",  accent:"#39ffd6", rgb:"57,255,214", icon:"💻", extra:["⌨️","🖥️","🔌","🤖"],
+      message:"You taught us that every error is just information, and every bug is one step closer to working code. Thank you for debugging our thinking too.",
+      quote:"You taught us to break problems down — one line at a time." },
+    biology:   { label:"BIOLOGY TEACHER",   accent:"#7ed957", rgb:"126,217,87", icon:"🧬", extra:["🌱","🔬","🦋","🩺"],
+      message:"You showed us the science of life itself, cell by cell, and made us fall in love with how living things work. Thank you for the wonder.",
+      quote:"You taught us that life is complicated, beautiful, and worth studying closely." },
+    chemistry: { label:"CHEMISTRY TEACHER", accent:"#4fc3f7", rgb:"79,195,247", icon:"⚗️", extra:["🧪","💥","🧫","🔥"],
+      message:"You taught us reactions, equations, and the quiet thrill of an experiment going exactly right. Thank you for the spark.",
+      quote:"You taught us that the right mix, at the right moment, changes everything." },
+    physics:   { label:"PHYSICS TEACHER",   accent:"#7c93ff", rgb:"124,147,255", icon:"🪐", extra:["🔭","⚡","🧲","🌌"],
+      message:"You explained the forces that hold the universe together, and somehow made gravity feel personal. Thank you for the clarity.",
+      quote:"You taught us the rules the universe follows — and why they matter." },
+    economics: { label:"ECONOMICS TEACHER", accent:"#ffd166", rgb:"255,209,102", icon:"📈", extra:["💹","🏦","💡","📊"],
+      message:"You taught us to see the patterns behind everyday choices, and why they matter far beyond the classroom. Thank you for the bigger lens.",
+      quote:"You taught us that small decisions add up to big consequences." },
+    sst:       { label:"SST TEACHER",       accent:"#ff9e6d", rgb:"255,158,109", icon:"🗺️", extra:["🏛️","🌍","⚖️","📜"],
+      message:"History, geography, civics, economics — you held it all together and showed us how the world actually works, past and present. Thank you for the bigger picture.",
+      quote:"You taught us that society, like history, is best understood by asking why." },
+  };
+  themes.math = themes.maths;
+  themes.literature = themes.english;
+  themes.dance = themes.music;
+  themes.sports = themes.pe;
+  themes.commerce = themes.economics;
+  themes.computerscience = themes.computer;
+  themes.cs = themes.computer;
+  themes.socialstudies = themes.sst;
+  themes.socialscience = themes.sst;
+
+  const defaultTheme = { label:"TEACHER", accent:"#e8b94a", rgb:"232,185,74", icon:"🍎", extra:["📚","✏️","🎓","🌟"],
+    message:"You show up every day and give a little more than anyone asked for. Thank you for shaping how we think, and who we become.",
+    quote:"A good teacher can inspire hope, ignite the imagination, and instil a love of learning." };
+
+  function normalizeKey(raw){ return raw.trim().toLowerCase().replace(/[^a-z]/g, ""); }
+
+  function matchTheme(subjectRaw){
+    const key = normalizeKey(subjectRaw);
+    if (!key) return defaultTheme;
+    if (themes[key]) return themes[key];
+    for (const k of Object.keys(themes)){
+      if (themes[k] && k.length > 2 && (key.includes(k) || k.includes(key))) return themes[k];
+    }
+    return defaultTheme;
+  }
+
+  function titleCaseName(name){
+    return name.trim().split(/\s+/).map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
+  }
+
+  function setAccent(theme){
+    document.documentElement.style.setProperty('--accent', theme.accent);
+    document.documentElement.style.setProperty('--accent-rgb', theme.rgb);
+  }
+
+  // password visibility toggle (visible by default, per request)
+  let pwVisible = true;
+  document.getElementById('toggle-pw').addEventListener('click', function(){
+    const input = document.getElementById('teacher-subject');
+    pwVisible = !pwVisible;
+    input.type = pwVisible ? 'text' : 'password';
+    this.textContent = pwVisible ? '🙈' : '👁️';
+    this.setAttribute('aria-label', pwVisible ? 'Hide password' : 'Show password');
+  });
+
+  let selectedTitle = null;
+  document.querySelectorAll('.title-chip').forEach(function(chip){
+    chip.addEventListener('click', function(){
+      selectedTitle = this.dataset.title;
+      document.querySelectorAll('.title-chip').forEach(c => c.classList.remove('active'));
+      this.classList.add('active');
+      document.getElementById('title-hint').style.color = '';
+      document.getElementById('title-select').classList.remove('error');
+    });
+  });
+
+  ['teacher-name', 'teacher-subject'].forEach(function(id){
+    document.getElementById(id).addEventListener('input', function(){
+      this.classList.remove('error');
+    });
+  });
+
+  function handleLogin(){
+    const nameInput = document.getElementById('teacher-name');
+    const subjectInput = document.getElementById('teacher-subject');
+    const hint = document.getElementById('field-hint');
+    const titleHint = document.getElementById('title-hint');
+    const titleSelectEl = document.getElementById('title-select');
+
+    nameInput.classList.remove('error');
+    subjectInput.classList.remove('error');
+    titleSelectEl.classList.remove('error');
+
+    let hasError = false;
+
+    if (!selectedTitle){
+      titleHint.textContent = "Please choose Aunty or Sir.";
+      titleHint.style.color = "#e05c3a";
+      titleSelectEl.classList.add('error');
+      setTimeout(() => titleSelectEl.classList.remove('error'), 400);
+      hasError = true;
+    }
+    if (!nameInput.value.trim()){
+      nameInput.classList.add('error');
+      hasError = true;
+    }
+    if (!subjectInput.value.trim()){
+      subjectInput.classList.add('error');
+      hasError = true;
+    }
+    if (!nameInput.value.trim() || !subjectInput.value.trim()){
+      hint.textContent = "Please fill in both your name and your subject.";
+      hint.style.color = "#e05c3a";
+    }
+    if (hasError) return;
+
+    hint.style.color = "";
+
+    const name = titleCaseName(nameInput.value) + " " + selectedTitle;
+    const theme = matchTheme(subjectInput.value);
+
+    setAccent(theme);
+    document.getElementById('tag-text').textContent = theme.label;
+    document.getElementById('badge-icon').textContent = theme.icon;
+    document.getElementById('subject-line').innerHTML = `To <strong>${name}</strong>, our ${theme.label.charAt(0) + theme.label.slice(1).toLowerCase()}`;
+    document.getElementById('message').textContent = theme.message;
+    document.getElementById('quote-text').textContent = theme.quote;
+
+    const strip = document.getElementById('sticker-strip');
+    strip.innerHTML = "";
+    [theme.icon, ...theme.extra].forEach(ic => {
+      const s = document.createElement('span');
+      s.textContent = ic;
+      strip.appendChild(s);
+    });
+
+    const bgFloaters = document.getElementById('floaters-celebrate');
+    bgFloaters.innerHTML = "";
+    const positions = [
+      {top:"10%", left:"6%"}, {top:"75%", left:"10%"}, {top:"18%", right:"8%"},
+      {bottom:"16%", right:"10%"}, {top:"48%", left:"2%"}
+    ];
+    theme.extra.forEach((ic, i) => {
+      const s = document.createElement('span');
+      s.textContent = ic;
+      const pos = positions[i % positions.length];
+      Object.assign(s.style, pos, { animationDelay: (i * 1.3) + 's' });
+      bgFloaters.appendChild(s);
+    });
+
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('celebrate-screen').style.display = 'block';
+
+    const content = document.querySelector('.content');
+    content.style.animation = 'none';
+    void content.offsetWidth;
+    content.style.animation = null;
+  }
+
+  document.getElementById('enter-btn').addEventListener('click', handleLogin);
+  ['teacher-name', 'teacher-subject'].forEach(function(id){
+    document.getElementById(id).addEventListener('keydown', function(e){
+      if (e.key === 'Enter'){
+        e.preventDefault();
+        handleLogin();
+      }
+    });
+  });
+
+  document.getElementById('switch-btn').addEventListener('click', function(){
+    document.getElementById('celebrate-screen').style.display = 'none';
+    document.getElementById('login-screen').style.display = 'flex';
+    document.getElementById('teacher-name').value = '';
+    document.getElementById('teacher-subject').value = '';
+    document.getElementById('field-hint').textContent = "e.g. Science, Maths, English, Art, History...";
+    document.getElementById('field-hint').style.color = '';
+    document.getElementById('title-hint').textContent = "This gets added after your name, out of respect.";
+    document.getElementById('title-hint').style.color = '';
+    document.getElementById('teacher-name').classList.remove('error');
+    document.getElementById('teacher-subject').classList.remove('error');
+    document.getElementById('title-select').classList.remove('error');
+    selectedTitle = null;
+    document.querySelectorAll('.title-chip').forEach(c => c.classList.remove('active'));
+    setAccent(defaultTheme);
+  });
+</script>
+</body>
+</html>
